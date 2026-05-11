@@ -16,18 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download Godot headless
-        run: |
-          wget -q "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip" -O godot.zip
-          unzip -q godot.zip
-          chmod +x Godot_v4.3-stable_linux.x86_64
-          sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
-
-      - name: Import project (generates .godot cache)
-        run: godot --headless --path client-godot --import 2>/dev/null || true
-
       - name: Run GdUnit4 tests
-        run: |
-          godot --headless --path client-godot \
-            -s addons/gdUnit4/bin/GdUnitCmdTool.gd \
-            --test-suite "res://tests/" 2>&1
+        uses: MikeSchulze/gdUnit4-action@v1
+        with:
+          godot-version: "4.3"
+          godot-status: "stable"
+          project-dir: "client-godot"
+          paths: "res://tests/"
+          timeout: 10
