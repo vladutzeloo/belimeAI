@@ -29,18 +29,13 @@ jobs:
           sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Install GdUnit4 addon
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download \
-            --repo godot-gdunit-labs/gdUnit4 \
-            --pattern "GdUnit4-v*.zip" \
-            --output gdunit4.zip \
-            --clobber
+          git clone --depth 1 --branch v6.1.3 \
+            https://github.com/godot-gdunit-labs/gdUnit4.git /tmp/gdunit4
           mkdir -p client-godot/addons
-          unzip -q gdunit4.zip -d client-godot/addons/
-          echo "GdUnit4 addon installed:"
-          ls client-godot/addons/
+          cp -r /tmp/gdunit4/addons/gdUnit4 client-godot/addons/
+          echo "GdUnit4 installed at:"
+          ls client-godot/addons/gdUnit4/
 
       - name: Import Godot project
         run: |
