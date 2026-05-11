@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=13 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/WSClient.gd" id="2"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" path="res://assets/stations/coder_station.png" id="5"]
 [ext_resource type="Texture2D" path="res://assets/stations/executor_station.png" id="6"]
 [ext_resource type="Script" path="res://scripts/RoomRenderer.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/EventLog.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/RunButton.gd" id="9"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1")
@@ -95,11 +97,40 @@ text = "EXECUTE"
 [node name="StatusLabel" type="Label" parent="HUD"]
 offset_left = 4.0
 offset_top = 2.0
-offset_right = 316.0
+offset_right = 240.0
 offset_bottom = 12.0
 theme_override_colors/font_color = Color(0, 0.94, 1, 0.7)
 theme_override_font_sizes/font_size = 6
 text = "NEON CONTROL ROOM  //  AWAITING CONNECTION"
+
+[node name="RunButton" type="Button" parent="HUD"]
+offset_left = 252.0
+offset_top = 2.0
+offset_right = 316.0
+offset_bottom = 14.0
+theme_override_font_sizes/font_size = 6
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_colors/font_hover_color = Color(0.5, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+text = "RUN DEMO"
+flat = true
+script = ExtResource("9")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="HUD/RunButton"]
+
+[node name="EventLog" type="Control" parent="HUD"]
+offset_left = 4.0
+offset_top = 122.0
+offset_right = 156.0
+offset_bottom = 168.0
+script = ExtResource("8")
+
+[node name="Lines" type="RichTextLabel" parent="HUD/EventLog"]
+offset_right = 152.0
+offset_bottom = 46.0
+bbcode_enabled = true
+theme_override_font_sizes/normal_font_size = 5
+scroll_active = false
 
 [node name="WSClient" type="Node" parent="."]
 script = ExtResource("2")

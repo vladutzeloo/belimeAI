@@ -72,27 +72,50 @@ def make_char_frame(colors: dict, variant: str = "idle") -> Image.Image:
         (5, 8), (6, 8), (7, 8), (8, 8), (9, 8), (10, 8),
         (5, 9), (6, 9), (7, 9), (8, 9), (9, 9), (10, 9),
     ]
-    # legs (rows 11-14)
-    legs = [
-        (5, 11), (6, 11), (9, 11), (10, 11),
-        (5, 12), (6, 12), (9, 12), (10, 12),
-        (5, 13), (6, 13), (9, 13), (10, 13),
-        (5, 14), (6, 14), (9, 14), (10, 14),
-    ]
+    # legs (rows 11-14) — variant-aware: walking shifts opposite legs forward
+    if variant == "walk":
+        # left leg forward
+        legs = [
+            (4, 11), (5, 11), (9, 11), (10, 11),
+            (4, 12), (5, 12), (9, 12), (10, 12),
+            (4, 13), (5, 13), (10, 13), (11, 13),
+            (4, 14), (5, 14), (10, 14), (11, 14),
+        ]
+    elif variant == "walk2":
+        # right leg forward
+        legs = [
+            (5, 11), (6, 11), (10, 11), (11, 11),
+            (5, 12), (6, 12), (10, 12), (11, 12),
+            (4, 13), (5, 13), (10, 13), (11, 13),
+            (4, 14), (5, 14), (10, 14), (11, 14),
+        ]
+    else:
+        legs = [
+            (5, 11), (6, 11), (9, 11), (10, 11),
+            (5, 12), (6, 12), (9, 12), (10, 12),
+            (5, 13), (6, 13), (9, 13), (10, 13),
+            (5, 14), (6, 14), (9, 14), (10, 14),
+        ]
 
     # base arm positions
     arms_idle  = [(3, 7), (4, 7), (11, 7), (12, 7)]
     arms_work  = [(3, 6), (4, 6), (11, 6), (12, 6),
                   (2, 7), (13, 7)]
+    arms_walk  = [(3, 7), (4, 7), (11, 6), (12, 6)]
+    arms_walk2 = [(3, 6), (4, 6), (11, 7), (12, 7)]
     arms_error = arms_idle
 
     # pick arms
-    if "work" in variant:
+    if variant == "walk":
+        arms = arms_walk
+    elif variant == "walk2":
+        arms = arms_walk2
+    elif "work" in variant:
         arms = arms_work
     else:
         arms = arms_idle
 
-    # body shift for idle2 (breathing bob)
+    # body shift for idle2 (breathing bob) and walk frames
     dy = 1 if variant in ("idle2", "work2") else 0
 
     def shift(pts: list[tuple[int,int]], delta: int) -> list[tuple[int,int]]:
@@ -144,17 +167,19 @@ def make_char_frame(colors: dict, variant: str = "idle") -> Image.Image:
 
 
 def make_sprite_sheet(agent: str) -> Image.Image:
-    """6-frame horizontal sheet: idle×2, work×2, error×2."""
+    """8-frame horizontal sheet: idle×2, walk×2, work×2, error×2."""
     c = AGENT_COLORS[agent]
     frames = [
         make_char_frame(c, "idle"),
         make_char_frame(c, "idle2"),
+        make_char_frame(c, "walk"),
+        make_char_frame(c, "walk2"),
         make_char_frame(c, "work"),
         make_char_frame(c, "work2"),
         make_char_frame(c, "error"),
         make_char_frame(c, "error2"),
     ]
-    sheet = Image.new("RGBA", (16 * 6, 16), (0, 0, 0, 0))
+    sheet = Image.new("RGBA", (16 * 8, 16), (0, 0, 0, 0))
     for i, f in enumerate(frames):
         sheet.paste(f, (i * 16, 0))
     return sheet

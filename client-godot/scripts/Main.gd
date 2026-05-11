@@ -9,6 +9,7 @@ var _npc_map:       Dictionary = {}   # agent_id -> AgentNPC
 @onready var _agents_root:  Node2D    = $Agents
 @onready var _stations_root: Node2D   = $Stations
 @onready var _status_label: Label     = $HUD/StatusLabel
+@onready var _event_log:    Node      = $HUD/EventLog
 @onready var _ws_client:    WSClient  = $WSClient
 
 func _ready() -> void:
@@ -35,6 +36,8 @@ func _on_connection_changed(connected: bool) -> void:
 	)
 
 func _on_event_received(data: Dictionary) -> void:
+	if _event_log and _event_log.has_method("push_event"):
+		_event_log.push_event(data)
 	match data.get("type", ""):
 		"agent_state":    _handle_agent_state(data)
 		"task_transition": _handle_task_transition(data)

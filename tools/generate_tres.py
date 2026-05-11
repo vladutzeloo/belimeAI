@@ -1,10 +1,11 @@
 """
 Generates Godot 4 SpriteFrames .tres files for each agent.
 
-Sheet layout (96x16, 6 frames of 16x16):
-  frames 0-1  → idle   (5 fps, loop)
-  frames 2-3  → working (8 fps, loop)
-  frames 4-5  → error   (4 fps, loop)
+Sheet layout (128x16, 8 frames of 16x16):
+  frames 0-1  → idle    (5 fps, loop)
+  frames 2-3  → walk    (8 fps, loop)
+  frames 4-5  → working (8 fps, loop)
+  frames 6-7  → error   (4 fps, loop)
 
 Run from repo root:  python tools/generate_tres.py
 """
@@ -46,8 +47,9 @@ region = Rect2({x}, 0, 16, 16)
 # animation definitions: name, fps, frame indices
 ANIMATIONS = [
     ("idle",    5.0, [0, 1]),
-    ("working", 8.0, [2, 3]),
-    ("error",   4.0, [4, 5]),
+    ("walk",    8.0, [2, 3]),
+    ("working", 8.0, [4, 5]),
+    ("error",   4.0, [6, 7]),
 ]
 
 
@@ -65,7 +67,7 @@ def generate_tres(agent: str) -> str:
 
     # build atlas sub-resources
     frame_to_sub: dict[int, str] = {}
-    for frame_idx in range(6):
+    for frame_idx in range(8):
         sub_id = f"AtlasTexture_{agent}_{frame_idx}"
         x_offset = frame_idx * 16
         sub_resources += ATLAS_TEMPLATE.format(
