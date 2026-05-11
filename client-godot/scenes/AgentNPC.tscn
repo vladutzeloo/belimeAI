@@ -1,20 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://agent_npc"]
+[gd_scene load_steps=3 format=3 uid="uid://agent_npc"]
 
 [ext_resource type="Script" path="res://scripts/AgentNPC.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/provider_icons.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_claude"]
+atlas = ExtResource("2")
+region = Rect2(0, 0, 16, 16)
 
 [node name="AgentNPC" type="Node2D"]
 script = ExtResource("1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+centered = false
+offset = Vector2(-8, -14)
 
 [node name="ProviderIcon" type="Sprite2D" parent="."]
-position = Vector2(0, -14)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -18)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2")
+
+[node name="StateGlow" type="PointLight2D" parent="."]
+color = Color(0, 0.94, 1, 1)
+energy = 0.0
+texture_scale = 0.3
 
 [node name="Label" type="Label" parent="."]
 offset_left = -20.0
-offset_top = 8.0
+offset_top = 6.0
 offset_right = 20.0
-offset_bottom = 20.0
-theme_override_font_sizes/font_size = 6
+offset_bottom = 14.0
+theme_override_font_sizes/font_size = 5
 horizontal_alignment = 1

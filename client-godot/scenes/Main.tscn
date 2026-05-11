@@ -1,30 +1,136 @@
-[gd_scene load_steps=3 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=13 format=3 uid="uid://main_scene"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/WSClient.gd" id="2"]
+[ext_resource type="Texture2D" path="res://assets/stations/planner_station.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/stations/researcher_station.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/stations/coder_station.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/stations/executor_station.png" id="6"]
+[ext_resource type="Script" path="res://scripts/RoomRenderer.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/EventLog.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/RunButton.gd" id="9"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1")
 
-[node name="TileMap" type="TileMap" parent="."]
-tile_set = null
-format = 2
+[node name="RoomRenderer" type="Node2D" parent="."]
+script = ExtResource("7")
 
 [node name="Stations" type="Node2D" parent="."]
 
 [node name="PlanningConsole" type="Node2D" parent="Stations"]
-position = Vector2(48, 48)
+position = Vector2(64, 52)
+
+[node name="StationSprite" type="Sprite2D" parent="Stations/PlanningConsole"]
+texture = ExtResource("3")
+centered = false
+offset = Vector2(-16, -16)
+
+[node name="StationLabel" type="Label" parent="Stations/PlanningConsole"]
+offset_left = -28.0
+offset_top = 14.0
+offset_right = 28.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 6
+horizontal_alignment = 1
+text = "PLANNING"
 
 [node name="LibraryCorner" type="Node2D" parent="Stations"]
-position = Vector2(208, 48)
+position = Vector2(224, 52)
+
+[node name="StationSprite" type="Sprite2D" parent="Stations/LibraryCorner"]
+texture = ExtResource("4")
+centered = false
+offset = Vector2(-16, -16)
+
+[node name="StationLabel" type="Label" parent="Stations/LibraryCorner"]
+offset_left = -28.0
+offset_top = 14.0
+offset_right = 28.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0.63, 0, 1, 1)
+theme_override_font_sizes/font_size = 6
+horizontal_alignment = 1
+text = "RESEARCH"
 
 [node name="CodingBay" type="Node2D" parent="Stations"]
-position = Vector2(48, 128)
+position = Vector2(64, 132)
+
+[node name="StationSprite" type="Sprite2D" parent="Stations/CodingBay"]
+texture = ExtResource("5")
+centered = false
+offset = Vector2(-16, -16)
+
+[node name="StationLabel" type="Label" parent="Stations/CodingBay"]
+offset_left = -28.0
+offset_top = 14.0
+offset_right = 28.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0, 1, 0.53, 1)
+theme_override_font_sizes/font_size = 6
+horizontal_alignment = 1
+text = "CODING"
 
 [node name="ExecutionTerminal" type="Node2D" parent="Stations"]
-position = Vector2(208, 128)
+position = Vector2(224, 132)
+
+[node name="StationSprite" type="Sprite2D" parent="Stations/ExecutionTerminal"]
+texture = ExtResource("6")
+centered = false
+offset = Vector2(-16, -16)
+
+[node name="StationLabel" type="Label" parent="Stations/ExecutionTerminal"]
+offset_left = -28.0
+offset_top = 14.0
+offset_right = 28.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(1, 0.53, 0, 1)
+theme_override_font_sizes/font_size = 6
+horizontal_alignment = 1
+text = "EXECUTE"
 
 [node name="Agents" type="Node2D" parent="."]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="StatusLabel" type="Label" parent="HUD"]
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 240.0
+offset_bottom = 12.0
+theme_override_colors/font_color = Color(0, 0.94, 1, 0.7)
+theme_override_font_sizes/font_size = 6
+text = "NEON CONTROL ROOM  //  AWAITING CONNECTION"
+
+[node name="RunButton" type="Button" parent="HUD"]
+offset_left = 252.0
+offset_top = 2.0
+offset_right = 316.0
+offset_bottom = 14.0
+theme_override_font_sizes/font_size = 6
+theme_override_colors/font_color = Color(0, 0.94, 1, 1)
+theme_override_colors/font_hover_color = Color(0.5, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+text = "RUN DEMO"
+flat = true
+script = ExtResource("9")
+
+[node name="HTTPRequest" type="HTTPRequest" parent="HUD/RunButton"]
+
+[node name="EventLog" type="Control" parent="HUD"]
+offset_left = 4.0
+offset_top = 122.0
+offset_right = 156.0
+offset_bottom = 168.0
+script = ExtResource("8")
+
+[node name="Lines" type="RichTextLabel" parent="HUD/EventLog"]
+offset_right = 152.0
+offset_bottom = 46.0
+bbcode_enabled = true
+theme_override_font_sizes/normal_font_size = 5
+scroll_active = false
 
 [node name="WSClient" type="Node" parent="."]
 script = ExtResource("2")
