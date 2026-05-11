@@ -16,11 +16,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Godot 4.3 headless
+        run: |
+          wget -q \
+            "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip" \
+            -O godot.zip
+          unzip -q godot.zip
+          chmod +x Godot_v4.3-stable_linux.x86_64
+          sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Install GdUnit4 addon
+        run: |
+          GDUNIT_TAG=$(curl -sf \
+            https://api.github.com/repos/MikeSchulze/gdUnit4/releases/latest \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
+          echo "Installing GdUnit4 ${GDUNIT_TAG}"
+          wget -q \
+            "https://github.com/MikeSchulze/gdUnit4/releases/download/${GDUNIT_TAG}/GdUnit4-${GDUNIT_TAG}.zip" \
+            -O gdunit4.zip
+          mkdir -p client-godot/addons
+          unzip -q gdunit4.zip -d client-godot/addons/
+
+      - name: Import Godot project
+        run: godot --headless --path client-godot --import 2>/dev/null || true
+
       - name: Run GdUnit4 tests
-        uses: MikeSchulze/gdUnit4-action@v1
+        run: |
+          godot --headless --path client-godot \
+            -s addons/gdUnit4/bin/GdUnitCmdTool.gd \
+            --test-suite res://tests/ \
+            --add-failure-return-code 1 \
+            2>&1 | tee gdunit_output.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          godot-version: "4.3"
-          godot-status: "stable"
-          project_dir: "client-godot"
-          paths: "res://tests/"
-          timeout: 10
+          name: gdunit4-report
+          path: client-godot/reports/
+          if-no-files-found: ignore
