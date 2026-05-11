@@ -1,0 +1,22 @@
+{
+  "agent_planner": {
+    "sprite_frames": "res://assets/characters/planner.tres",
+    "station": "Stations/PlanningConsole",
+    "color": "#00f0ff"
+  },
+  "agent_researcher": {
+    "sprite_frames": "res://assets/characters/researcher.tres",
+    "station": "Stations/LibraryCorner",
+    "color": "#a000ff"
+  },
+  "agent_coder": {
+    "sprite_frames": "res://assets/characters/coder.tres",
+    "station": "Stations/CodingBay",
+    "color": "#00ff88"
+  },
+  "agent_executor": {
+    "sprite_frames": "res://assets/characters/executor.tres",
+    "station": "Stations/ExecutionTerminal",
+    "color": "#ff4400"
+  }
+}

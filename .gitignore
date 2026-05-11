@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruff
+.ruff_cache/
+
+# Godot
+client-godot/.godot/
+client-godot/*.import
+client-godot/export_presets.cfg
+
+# OS
+.DS_Store
+Thumbs.db
