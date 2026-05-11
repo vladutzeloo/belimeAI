@@ -2,7 +2,7 @@
 ## Receives Dictionary events from Main and renders the last MAX_LINES of them.
 extends Control
 
-const MAX_LINES: int = 6
+const MAX_LINES: int = 4
 
 const COLOR_BY_TYPE: Dictionary = {
 	"agent_state":      Color(0,    0.94, 1,    1),
