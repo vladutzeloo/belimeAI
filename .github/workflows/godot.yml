@@ -21,6 +21,6 @@ jobs:
         with:
           godot-version: "4.3"
           godot-status: "stable"
-          project-dir: "client-godot"
+          project_dir: "client-godot"
           paths: "res://tests/"
           timeout: 10
