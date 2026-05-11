@@ -20,17 +20,18 @@ The server starts at `http://localhost:8000`. WebSocket at `ws://localhost:8000/
 2. Open `client-godot/project.godot`
 3. Press **F5** (Run)
 
-The HUD will show **AWAITING CONNECTION** until the backend is up, then switch to **CONNECTED**.
+The window opens at **1920×1080** (pixel-perfect 4× scale of a 480×270 internal viewport). The HUD will show **AWAITING CONNECTION** until the backend is up, then switch to **CONNECTED**.
 
 ### 3. Hit RUN DEMO
 
-Click the **RUN DEMO** button (top right of the HUD).
+Click the **[ RUN DEMO ]** button (top right of the HUD).
 
 You'll see:
+- Four stone-walled **agent cellars** — Planning Crypt (cyan), Archive Vault (purple), Forge Cellar (green), Exec Chamber (orange) — joined by a central neon corridor
 - The Planner NPC glow cyan and animate at the Planning Console
 - A data packet fly across the room to the Researcher
 - Each agent walk to its station, animate through its states (planning → working → calling_tool → idle)
-- The EventLog panel (bottom left) stream live state changes
+- The EventLog panel (bottom strip) stream live state changes
 
 ### Architecture
 
