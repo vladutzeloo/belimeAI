@@ -13,6 +13,9 @@ jobs:
   gdunit-tests:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,28 +29,32 @@ jobs:
           sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Install GdUnit4 addon
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          GDUNIT_TAG=$(curl -sf \
-            https://api.github.com/repos/MikeSchulze/gdUnit4/releases/latest \
-            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])")
-          echo "Installing GdUnit4 ${GDUNIT_TAG}"
-          wget -q \
-            "https://github.com/MikeSchulze/gdUnit4/releases/download/${GDUNIT_TAG}/GdUnit4-${GDUNIT_TAG}.zip" \
-            -O gdunit4.zip
+          gh release download \
+            --repo godot-gdunit-labs/gdUnit4 \
+            --pattern "GdUnit4-v*.zip" \
+            --output gdunit4.zip \
+            --clobber
           mkdir -p client-godot/addons
           unzip -q gdunit4.zip -d client-godot/addons/
+          echo "GdUnit4 addon installed:"
+          ls client-godot/addons/
 
       - name: Import Godot project
-        run: godot --headless --path client-godot --import 2>/dev/null || true
+        run: |
+          godot --headless --path client-godot --import 2>&1 || true
+          sleep 2
 
       - name: Run GdUnit4 tests
         run: |
           godot --headless --path client-godot \
             -s addons/gdUnit4/bin/GdUnitCmdTool.gd \
+            -- \
             --test-suite res://tests/ \
-            --add-failure-return-code 1 \
-            2>&1 | tee gdunit_output.txt
-          exit ${PIPESTATUS[0]}
+            2>&1
+          echo "Exit code: $?"
 
       - name: Upload test report
         if: always()
