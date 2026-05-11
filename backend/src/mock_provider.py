@@ -2,7 +2,7 @@
 
 
 class MockProvider:
-    def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
+    async def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
         return {
             "content": f"[mock response from {model_name}]",
             "model": model_name,

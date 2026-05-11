@@ -10,7 +10,7 @@ class NvidiaNIMProvider:
         self._api_key = api_key or os.environ.get("NIM_API_KEY", "")
         self._base_url = (base_url or os.environ.get("NIM_BASE_URL", "")).rstrip("/")
 
-    def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
+    async def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
@@ -21,12 +21,13 @@ class NvidiaNIMProvider:
             "max_tokens": kwargs.pop("max_tokens", 1024),
             **kwargs,
         }
-        response = httpx.post(
-            f"{self._base_url}/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=60,
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{self._base_url}/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60,
+            )
         response.raise_for_status()
         data = response.json()
         choice = data["choices"][0]

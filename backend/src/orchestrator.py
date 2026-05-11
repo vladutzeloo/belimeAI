@@ -18,21 +18,20 @@ class DemoOrchestrator:
         """
         routing: {agent_id: {"provider": <LLMProvider>, "provider_name": str, "model_name": str}}
         """
-        self._routing = routing
-
-    def _make_agent(self, agent_id: str):
-        cfg = self._routing[agent_id]
         cls_map = {
             "agent_planner": PlannerAgent,
             "agent_researcher": ResearcherAgent,
             "agent_coder": CoderAgent,
             "agent_executor": ExecutorAgent,
         }
-        return cls_map[agent_id](
-            provider=cfg["provider"],
-            provider_name=cfg["provider_name"],
-            model_name=cfg["model_name"],
-        )
+        self._agents = {
+            agent_id: cls_map[agent_id](
+                provider=cfg["provider"],
+                provider_name=cfg["provider_name"],
+                model_name=cfg["model_name"],
+            )
+            for agent_id, cfg in routing.items()
+        }
 
     async def run_demo(self, goal: str) -> AsyncIterator[dict]:
         run_id = str(uuid.uuid4())[:8]
@@ -46,10 +45,9 @@ class DemoOrchestrator:
             ("agent_coder", "agent_executor"),
         ]
 
-        current_agent_id = "agent_planner"
         task = {"task_id": task_id, "goal": goal}
 
-        async for event in self._make_agent(current_agent_id).run(task):
+        async for event in self._agents["agent_planner"].run(task):
             yield event.model_dump()
 
         for from_id, to_id in pipeline:
@@ -59,7 +57,7 @@ class DemoOrchestrator:
                 task_id=task_id,
             ).model_dump()
             await asyncio.sleep(0.1)
-            async for event in self._make_agent(to_id).run(task):
+            async for event in self._agents[to_id].run(task):
                 yield event.model_dump()
 
         yield SystemMessageEvent(message="Demo run complete.", task_id=task_id).model_dump()

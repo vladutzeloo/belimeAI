@@ -13,7 +13,7 @@ class ResearcherAgent(BaseAgent):
         yield self._state_event("working", task_id)
         await asyncio.sleep(0.3)
 
-        self.provider.generate(
+        await self.provider.generate(
             messages=[{"role": "user", "content": f"Research: {task.get('topic', task['goal'])}"}],
             model_name=self.model_name,
         )

@@ -27,3 +27,7 @@ renderer/rendering_method.mobile="gl_compatibility"
 [physics]
 
 common/physics_ticks_per_second=60
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")

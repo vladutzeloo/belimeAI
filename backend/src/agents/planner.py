@@ -13,7 +13,7 @@ class PlannerAgent(BaseAgent):
         yield self._state_event("planning", task_id)
         await asyncio.sleep(0.3)
 
-        self.provider.generate(
+        await self.provider.generate(
             messages=[{"role": "user", "content": f"Break this into 3 steps: {task['goal']}"}],
             model_name=self.model_name,
         )

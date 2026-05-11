@@ -7,7 +7,7 @@ class LocalLLMProvider:
     def __init__(self, base_url: str = "http://localhost:11434"):
         self._base_url = base_url.rstrip("/")
 
-    def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
+    async def generate(self, messages: list[dict], model_name: str, **kwargs) -> dict:
         headers = {"Content-Type": "application/json"}
         payload = {
             "model": model_name,
@@ -15,12 +15,13 @@ class LocalLLMProvider:
             "max_tokens": kwargs.pop("max_tokens", 1024),
             **kwargs,
         }
-        response = httpx.post(
-            f"{self._base_url}/v1/chat/completions",
-            headers=headers,
-            json=payload,
-            timeout=120,
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{self._base_url}/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=120,
+            )
         response.raise_for_status()
         data = response.json()
         choice = data["choices"][0]

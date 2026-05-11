@@ -13,7 +13,7 @@ class ExecutorAgent(BaseAgent):
         yield self._state_event("calling_tool", task_id)
         await asyncio.sleep(0.3)
 
-        self.provider.generate(
+        await self.provider.generate(
             messages=[{"role": "user", "content": f"Execute: {task['goal']}"}],
             model_name=self.model_name,
         )
