@@ -94,12 +94,12 @@ func _spawn_data_packet(from_id: String, to_id: String) -> void:
 		return
 
 	var packet := ColorRect.new()
-	packet.size    = Vector2(4, 4)
-	packet.color   = Color(0, 0.94, 1, 0.9)
-	packet.position = from_npc.global_position
+	packet.size  = Vector2(4, 4)
+	packet.color = Color(0, 0.94, 1, 0.9)
 	_agents_root.add_child(packet)
+	packet.global_position = from_npc.global_position
 
 	var tween := packet.create_tween()
-	tween.tween_property(packet, "position", to_npc.global_position, 0.4) \
+	tween.tween_property(packet, "global_position", to_npc.global_position, 0.4) \
 		.set_trans(Tween.TRANS_SINE)
 	tween.tween_callback(packet.queue_free)

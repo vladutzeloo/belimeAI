@@ -53,10 +53,8 @@ func set_provider(provider: String) -> void:
 	if not _icon:
 		return
 	var x: int = PROVIDER_ICON_X.get(provider, 0)
-	var atlas := AtlasTexture.new()
-	atlas.atlas = load("res://assets/ui/provider_icons.png")
-	atlas.region = Rect2(x, 0, 16, 16)
-	_icon.texture = atlas
+	_icon.region_enabled = true
+	_icon.region_rect = Rect2(x, 0, 16, 16)
 
 func move_to_station(station_node: Node2D) -> void:
 	if station_node:
