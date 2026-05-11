@@ -56,7 +56,8 @@ class DemoOrchestrator:
                 to_agent=to_id,  # type: ignore[arg-type]
                 task_id=task_id,
             ).model_dump()
-            await asyncio.sleep(0.1)
+            # pause so the Godot data-packet tween (~0.4s) and NPC walk (~0.9s) are visible
+            await asyncio.sleep(1.2)
             async for event in self._agents[to_id].run(task):
                 yield event.model_dump()
 
