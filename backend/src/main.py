@@ -36,6 +36,10 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
+# Built once at startup: file I/O + JSON parse + MockProvider instance are shared
+# across requests. The orchestrator itself is cheap to construct per-run.
+_routing = build_routing()
+
 
 app = FastAPI(title="AI Orchestrator", version="0.1.0")
 
@@ -54,7 +58,7 @@ class RunRequest(BaseModel):
 @app.post("/run")
 async def run_endpoint(req: RunRequest):
     """Start a demo orchestrator run and stream events over WebSocket."""
-    orchestrator = DemoOrchestrator(routing=build_routing())
+    orchestrator = DemoOrchestrator(routing=_routing)
 
     async def _stream():
         async for event in orchestrator.run_demo(req.goal):

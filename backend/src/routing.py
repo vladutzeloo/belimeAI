@@ -16,10 +16,15 @@ def load_routing_config(path: Path | str = DEFAULT_CONFIG_PATH) -> dict[str, dic
     """Load the JSON routing config and validate agent IDs and provider names."""
     data = json.loads(Path(path).read_text())
 
+    if not isinstance(data, dict):
+        raise ValueError(f"routing config must be a JSON object, got {type(data).__name__}")
+
     for agent_id in _AGENT_IDS:
         if agent_id not in data:
             raise ValueError(f"routing config missing agent: {agent_id}")
         entry = data[agent_id]
+        if not isinstance(entry, dict):
+            raise ValueError(f"{agent_id}: entry must be an object, got {type(entry).__name__}")
         if entry.get("provider") not in _PROVIDER_NAMES:
             raise ValueError(f"{agent_id}: invalid provider {entry.get('provider')!r}")
         if not entry.get("model_name"):
@@ -43,8 +48,8 @@ def build_routing(
     return {
         agent_id: {
             "provider": shared_provider,
-            "provider_name": entry["provider"],
-            "model_name": entry["model_name"],
+            "provider_name": cfg[agent_id]["provider"],
+            "model_name": cfg[agent_id]["model_name"],
         }
-        for agent_id, entry in cfg.items()
+        for agent_id in _AGENT_IDS
     }
