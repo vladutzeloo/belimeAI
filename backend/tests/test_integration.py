@@ -4,6 +4,7 @@ import pytest
 
 from src.mock_provider import MockProvider
 from src.orchestrator import DemoOrchestrator
+from src.routing import build_routing, load_routing_config
 
 
 def _routing():
@@ -70,3 +71,19 @@ async def test_demo_run_starts_and_ends_with_system_message():
     assert events[0]["type"] == "system_message"
     assert events[-1]["type"] == "system_message"
     assert "complete" in events[-1]["message"].lower()
+
+
+@pytest.mark.asyncio
+async def test_demo_run_respects_routing_config_per_agent():
+    cfg = load_routing_config()
+    orchestrator = DemoOrchestrator(routing=build_routing(cfg))
+
+    seen: dict[str, set[str]] = {}
+    async for event in orchestrator.run_demo("routed run"):
+        if event["type"] == "agent_state":
+            seen.setdefault(event["agent_id"], set()).add(event["provider"])
+
+    for agent_id, entry in cfg.items():
+        assert seen[agent_id] == {entry["provider"]}, (
+            f"{agent_id} should only emit provider {entry['provider']!r}, got {seen[agent_id]}"
+        )

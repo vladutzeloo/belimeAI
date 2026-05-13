@@ -1,0 +1,6 @@
+{
+  "agent_planner":    { "provider": "claude",     "model_name": "claude-sonnet-4-6" },
+  "agent_researcher": { "provider": "nvidia_nim",  "model_name": "meta/llama-3.1-70b-instruct" },
+  "agent_coder":      { "provider": "claude",     "model_name": "claude-sonnet-4-6" },
+  "agent_executor":   { "provider": "local_llm",  "model_name": "llama3" }
+}
