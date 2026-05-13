@@ -7,8 +7,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .mock_provider import MockProvider
 from .orchestrator import DemoOrchestrator
+from .routing import build_routing
 
 
 class ConnectionManager:
@@ -36,17 +36,9 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-
-def _build_routing() -> dict:
-    provider = MockProvider()
-    return {
-        agent_id: {
-            "provider": provider,
-            "provider_name": "claude",
-            "model_name": "claude-sonnet-4-6",
-        }
-        for agent_id in ("agent_planner", "agent_researcher", "agent_coder", "agent_executor")
-    }
+# Built once at startup: file I/O + JSON parse + MockProvider instance are shared
+# across requests. The orchestrator itself is cheap to construct per-run.
+_routing = build_routing()
 
 
 app = FastAPI(title="AI Orchestrator", version="0.1.0")
@@ -66,7 +58,7 @@ class RunRequest(BaseModel):
 @app.post("/run")
 async def run_endpoint(req: RunRequest):
     """Start a demo orchestrator run and stream events over WebSocket."""
-    orchestrator = DemoOrchestrator(routing=_build_routing())
+    orchestrator = DemoOrchestrator(routing=_routing)
 
     async def _stream():
         async for event in orchestrator.run_demo(req.goal):
